@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import String, Integer, ForeignKey
+from sqlalchemy import String
 from .base import Base
-from pydantic import EmailStr
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
