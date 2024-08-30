@@ -10,17 +10,17 @@ class DatabaseConnection():
             echo=db_echo,
             echo_pool=echo_pool,
             pool_size=pool_size
-        ),
+        )
         self.session_factory: AsyncGenerator[AsyncSession, None] = async_sessionmaker(
             bind=self.engine,
             autoflush=False,
             autocommit=False,
             expire_on_commit=False
-        ),
+        )
     async def sesion_creation(self) -> AsyncSession:
         async with self.session_factory() as session:
             yield session
-            
+            await session.close()
 
 
 db_conn = DatabaseConnection(db_echo=settings.db.echo, db_url=settings.db.url, pool_size=settings.db.pool_size, echo_pool=settings.db.echo_pool)

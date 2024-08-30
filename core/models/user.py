@@ -14,4 +14,4 @@ class User(Base):
     email: Mapped[str] = mapped_column(nullable=False, unique=True)
     password: Mapped[bytes] = mapped_column(nullable=False)
     
-    profile: Mapped["Profile"] = relationship(back_populates="users")
+    profile: Mapped["Profile"] = relationship(back_populates="user")

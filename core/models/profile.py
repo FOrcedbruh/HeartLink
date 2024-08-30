@@ -25,4 +25,4 @@ class Profile(Base):
     profileImages: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=True)
     
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, unique=True)
-    user: Mapped["User"] = relationship(back_populates="profiles")
+    user: Mapped["User"] = relationship(back_populates="profile")
