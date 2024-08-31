@@ -9,8 +9,10 @@ load_dotenv()
 
 DB_URL: str = os.environ.get("DB_URL")
 JWT_SECRET: str = os.environ.get("JWT_SECRET")
+CORS_ORIGIN: str = os.environ.get("CORS_ORIGIN")
 
-
+class CORSConfig(BaseModel):
+    origin: str = CORS_ORIGIN
 
 class DBConfig(BaseModel):
     url: str = DB_URL
@@ -27,6 +29,7 @@ class JWTConfig(BaseModel):
 class Settings(BaseSettings):
     db: DBConfig = DBConfig()
     jwt: JWTConfig =JWTConfig()
+    cors: CORSConfig = CORSConfig()
     
     
 

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, Response, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from core import db_conn
 from .schemas import UserRegistrationSchema, UserLoginSchema, UserSchema
-from .actions import TokenInfo, create_access_token, create_refresh_token, http_bearer, get_current_auth_user
+from .actions import TokenInfo, create_access_token, create_refresh_token, http_bearer, get_current_auth_user, get_current_auth_user_for_refresh
 from sqlalchemy import select
 from core.models import User, Profile
 from . import utils
@@ -14,8 +14,8 @@ router = APIRouter(prefix="/auth", tags=["Auth"], dependencies=[Depends(http_bea
 
 
 
-@router.post("/registration")
-async def registration(response: Response, session: AsyncSession = Depends(db_conn.sesion_creation), user_in: UserRegistrationSchema = Depends(UserRegistrationSchema)) -> TokenInfo:
+@router.post("/registration", response_model=TokenInfo)
+async def registration(response: Response, session: AsyncSession = Depends(db_conn.sesion_creation), user_in: UserRegistrationSchema = Depends(utils.registrationForm)) -> TokenInfo:
     st = await session.execute(select(User).filter(User.email == user_in.email))
     candidate = st.scalars().first()
     if candidate:
@@ -43,8 +43,8 @@ async def registration(response: Response, session: AsyncSession = Depends(db_co
         )
 
 
-@router.post("/login")
-async def login(response: Response, session: AsyncSession = Depends(db_conn.sesion_creation), user_in: UserLoginSchema = Depends(UserLoginSchema)) -> TokenInfo:
+@router.post("/login", response_model=TokenInfo)
+async def login(response: Response, session: AsyncSession = Depends(db_conn.sesion_creation), user_in: UserLoginSchema = Depends(utils.loginForm)) -> TokenInfo:
     st = await session.execute(select(User).filter(User.email == user_in.email))
     user = st.scalars().first()
     
@@ -75,7 +75,7 @@ async def login(response: Response, session: AsyncSession = Depends(db_conn.sesi
 
 @router.post("/logout")
 async def logout(response: Response) -> dict:
-    response.delete_cookie("acess_token")
+    response.delete_cookie("access_token")
     response.delete_cookie("refresh_token")
     
     return {
@@ -83,15 +83,34 @@ async def logout(response: Response) -> dict:
         "status": status.HTTP_200_OK
     }
     
-@router.get("/me")
+@router.get("/users/me")
 def get_profile(
         authUser: UserSchema = Depends(get_current_auth_user)
     ) -> dict:
-   
+    
     userData: dict = {
         "username": authUser.username,
         "email": authUser.email,
     }
     
     return userData
+
+
+
+@router.delete("/users/delete")
+async def delete_user(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user)):
+    pass
     
+
+@router.get("/refresh", response_model=TokenInfo, response_model_exclude_none=True)
+async def refresh(
+        response: Response,
+        authUser: UserSchema = Depends(get_current_auth_user_for_refresh)
+    ) -> TokenInfo:
+    access_token = create_access_token(user=authUser)
+    
+    response.set_cookie(key="access_token", value=access_token)
+    
+    return TokenInfo(
+        access_token=access_token
+    )

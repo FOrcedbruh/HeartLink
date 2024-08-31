@@ -1,8 +1,8 @@
 from . import utils
-from .schemas import UserSchema
+from .schemas import UserSchema, UserRegistrationSchema, UserLoginSchema
 from core import settings, db_conn
 from pydantic import BaseModel
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Form
 from fastapi.security import HTTPBearer, OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -89,3 +89,25 @@ async def get_current_auth_user(payload: dict = Depends(get_current_token), sess
             )
             
         return user
+    
+async def get_current_auth_user_for_refresh(payload: dict = Depends(get_current_token), session: AsyncSession = Depends(db_conn.sesion_creation)):
+    email: str | None = payload.get('sub')
+    token_type: str = payload.get(TOKEN_TYPE_FIELD)
+    if token_type != REFRESH_TYPE:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"Expected {REFRESH_TYPE} token type"
+        )
+    else:
+        st = await session.execute(select(User).filter(User.email == email))
+        user = st.scalars().first()
+        
+        if user == None:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token"
+            )
+            
+        return user
+    
+

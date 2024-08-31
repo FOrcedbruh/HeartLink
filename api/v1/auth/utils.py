@@ -2,6 +2,8 @@ import jwt
 from core import settings
 import bcrypt
 import datetime
+from .schemas import UserLoginSchema, UserRegistrationSchema
+from fastapi import Form
 
 def encode_token(
         expires_minutes: int,
@@ -30,3 +32,17 @@ def validation_password(
         password: str
     ) -> bool:
         return bcrypt.checkpw(password=password.encode(), hashed_password=hashed_password)
+    
+
+def registrationForm(username: str = Form(), email: str = Form(), password: str = Form()) -> UserRegistrationSchema:
+    return UserRegistrationSchema(
+        username=username,
+        email=email,
+        password=password
+    )
+
+def loginForm(email: str = Form(), password: str = Form()) -> UserLoginSchema:
+    return UserLoginSchema(
+        email=email,
+        password=password
+    )
