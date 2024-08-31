@@ -23,6 +23,7 @@ class Profile(Base):
     gender: Mapped[Genders] = mapped_column(Enum(Genders), nullable=False)
     age: Mapped[int] = mapped_column(nullable=False)
     profileImages: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=True)
+    hobbies: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=False)
     
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, unique=True)
     user: Mapped["User"] = relationship(back_populates="profile")

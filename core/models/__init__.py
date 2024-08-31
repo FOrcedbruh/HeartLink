@@ -2,12 +2,11 @@ __all__ = (
     "Base",
     "User",
     "Profile",
-    # "Hobby",
-    # "profiles_hobbies"
+    "Hobby",
 )
 
 from .profile import Profile
-# from .hobby import Hobby
 from .base import Base
 from .user import User
+from .hobby import Hobby
 
