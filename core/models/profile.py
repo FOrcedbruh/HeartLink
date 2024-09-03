@@ -8,6 +8,7 @@ from sqlalchemy.ext.mutable import MutableList
 if TYPE_CHECKING:
     from .user import User
 
+
 class Genders(enum.Enum):
     MALE: str = "male"
     FEMALE: str = "female"
@@ -20,10 +21,11 @@ class Profile(Base):
     
     firstname: Mapped[str] = mapped_column(nullable=False)
     surname: Mapped[str] = mapped_column(nullable=False)
-    gender: Mapped[Genders] = mapped_column(Enum(Genders), nullable=False)
-    age: Mapped[int] = mapped_column(nullable=False)
+    gender: Mapped[Genders] = mapped_column(Enum(Genders), nullable=True)
+    age: Mapped[int] = mapped_column(nullable=True)
     profileImages: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=True)
-    hobbies: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=False)
+    hobbies: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=True)
+    bio: Mapped[str] = mapped_column(nullable=True)
     
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, unique=True)
     user: Mapped["User"] = relationship(back_populates="profile")

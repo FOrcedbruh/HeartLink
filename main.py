@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 from api.v1 import router as APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from core import settings
@@ -20,4 +21,7 @@ def get_home():
     return {
         "message": "Welcome to HeartLink"
     }
+    
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
 

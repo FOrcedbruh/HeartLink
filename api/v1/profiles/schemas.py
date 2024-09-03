@@ -12,7 +12,7 @@ class ProfileSchema(BaseModel):
     age: int
     profileImage: list[str]
     hobbies: list[str]
-    
+    bio: str = Field(max_length=300)
 
 class ProfileProtectSchema(ProfileSchema):
     id: int

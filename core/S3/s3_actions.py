@@ -2,6 +2,7 @@ from aiobotocore.session import get_session
 from core import settings
 from contextlib import asynccontextmanager
 from fastapi import UploadFile, HTTPException, status
+import datetime
 
 class S3Client():
     def __init__(
@@ -29,13 +30,16 @@ class S3Client():
             
     
     async def upload_file(
-        self, 
-        file: UploadFile
+        self,
+        files: list[UploadFile]
     ):
-        contents: str = await file.read()
+        
         try:
             async with self.get_client() as client:
-                await client.put_object(Key=file.filename, Body=contents, Bucket=self.bucket_name)
+                for file in files:
+                    contents: str = await file.read()
+                    filename: str = file.filename
+                    await client.put_object(Key=filename, Body=contents, Bucket=self.bucket_name)
         except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
