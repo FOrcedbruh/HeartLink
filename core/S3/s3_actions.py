@@ -2,7 +2,7 @@ from aiobotocore.session import get_session
 from core import settings
 from contextlib import asynccontextmanager
 from fastapi import UploadFile, HTTPException, status
-import datetime
+
 
 class S3Client():
     def __init__(
@@ -29,7 +29,7 @@ class S3Client():
             yield client
             
     
-    async def upload_file(
+    async def upload_files(
         self,
         files: list[UploadFile]
     ):

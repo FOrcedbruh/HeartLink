@@ -14,6 +14,7 @@ S3_ACCESS_KEY: str = os.environ.get("S3_ACCESS_KEY")
 S3_SECRET_KEY: str = os.environ.get("S3_SECRET_KEY")
 STORAGE_URL: str = os.environ.get("STORAGE_URL")
 BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
+S3_GET_URL: str = os.environ.get("S3_GET_URL")
 
 
 #cors settings
@@ -42,6 +43,7 @@ class S3Storage(BaseModel):
     secret_key: str = S3_SECRET_KEY
     storage_url: str = STORAGE_URL
     bucket_name: str = BUCKET_NAME
+    get_url: str = S3_GET_URL
 
 
 #ROOT ----------------------------------------------------------------
