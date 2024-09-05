@@ -6,6 +6,7 @@ from .actions import TokenInfo, create_access_token, create_refresh_token, http_
 from sqlalchemy import select
 from core.models import User, Profile
 from . import utils
+from sqlalchemy.orm import joinedload
 
 
 
@@ -99,7 +100,23 @@ def get_profile(
 
 @router.delete("/users/delete")
 async def delete_user(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user)):
-    pass
+    result = await session.execute(
+            select(User).options(joinedload(User.profile)).filter_by(id=authUser.id)
+        )
+    profile = result.scalar_one_or_none()
+    
+    if not profile:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found"
+        )
+        
+    
+    return {
+        "status": status.HTTP_200_OK,
+        "detail": "Deleted"
+    }
+        
     
 
 @router.get("/refresh", response_model=TokenInfo, response_model_exclude_none=True)
