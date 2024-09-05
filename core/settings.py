@@ -15,6 +15,13 @@ S3_SECRET_KEY: str = os.environ.get("S3_SECRET_KEY")
 STORAGE_URL: str = os.environ.get("STORAGE_URL")
 BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
 S3_GET_URL: str = os.environ.get("S3_GET_URL")
+PORT: int = os.environ.get("PORT")
+HOST: str = os.environ.get("HOST")
+
+# run settings
+class RunConfig(BaseModel):
+    port: int = PORT
+    host: str = HOST
 
 
 #cors settings
@@ -52,6 +59,7 @@ class Settings(BaseSettings):
     jwt: JWTConfig =JWTConfig()
     cors: CORSConfig = CORSConfig()
     s3: S3Storage = S3Storage()
+    run: RunConfig = RunConfig()
     
 
 settings = Settings()

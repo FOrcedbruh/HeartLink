@@ -12,6 +12,7 @@ def encode_token(
         secret: str = settings.jwt.secret,
     ) -> str:
     payload["exp"] = datetime.datetime.now(datetime.UTC) + datetime.timedelta(minutes=expires_minutes)
+    payload["iat"] = datetime.datetime.now(datetime.UTC)
     return jwt.encode(key=secret, payload=payload, algorithm=algorithm)
 
 def decode_jwt(

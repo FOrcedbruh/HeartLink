@@ -100,22 +100,21 @@ def get_profile(
 
 @router.delete("/users/delete")
 async def delete_user(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user)):
-    result = await session.execute(
-            select(User).options(joinedload(User.profile)).filter_by(id=authUser.id)
-        )
-    profile = result.scalar_one_or_none()
+    st  = await session.execute(select(User).filter(User.id == authUser.id))
+    user = st.scalars().first()
     
-    if not profile:
+    if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found"
         )
         
-    
+    await session.delete(user)
     return {
         "status": status.HTTP_200_OK,
         "detail": "Deleted"
     }
+   
         
     
 
@@ -129,5 +128,6 @@ async def refresh(
     response.set_cookie(key="access_token", value=access_token)
     
     return TokenInfo(
-        access_token=access_token
+        access_token=access_token,
+        refresh_token=None
     )
