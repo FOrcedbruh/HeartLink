@@ -84,7 +84,7 @@ async def set_photos(session: AsyncSession, files: list[UploadFile], authUser: U
     
 
 
-async def get_profile(session: AsyncSession, authUser: UserSchema) -> ProfileSchema:
+async def get_profile(session: AsyncSession, authUser: UserSchema):
     st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
     profile = st.scalars().first()
     

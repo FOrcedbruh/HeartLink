@@ -16,12 +16,10 @@ STORAGE_URL: str = os.environ.get("STORAGE_URL")
 BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
 S3_GET_URL: str = os.environ.get("S3_GET_URL")
 PORT: int = os.environ.get("PORT")
-HOST: str = os.environ.get("HOST")
 
 # run settings
 class RunConfig(BaseModel):
     port: int = PORT
-    host: str = HOST
 
 
 #cors settings

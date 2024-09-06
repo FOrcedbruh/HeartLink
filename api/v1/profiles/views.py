@@ -4,12 +4,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from . import crud, utils
 from api.v1.auth.actions import get_current_auth_user
 from api.v1.auth.schemas import UserSchema
+from .schemas import ProfileSchema
 
 
 router = APIRouter(prefix="/profile", tags=["Profiles"])
 
 
-@router.post("/")
+@router.post("/", response_model_exclude_none=True, response_model=ProfileSchema)
 async def get_profile(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user)):
     return await crud.get_profile(session=session, authUser=authUser)
 

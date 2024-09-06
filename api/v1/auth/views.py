@@ -98,10 +98,10 @@ def get_profile(
 
 
 
-@router.delete("/users/delete")
-async def delete_user(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user)):
-    st  = await session.execute(select(User).filter(User.id == authUser.id))
-    user = st.scalars().first()
+@router.delete("/users/delete/{user_id}")
+async def delete_user(user_id: int, session: AsyncSession = Depends(db_conn.sesion_creation)):
+    st = await session.execute(select(User).filter_by(id=user_id))
+    user = st.scalar_one_or_none()
     
     if not user:
         raise HTTPException(
@@ -110,6 +110,8 @@ async def delete_user(session: AsyncSession = Depends(db_conn.sesion_creation), 
         )
         
     await session.delete(user)
+    await session.commit()
+    
     return {
         "status": status.HTTP_200_OK,
         "detail": "Deleted"

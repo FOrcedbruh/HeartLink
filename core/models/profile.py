@@ -1,5 +1,5 @@
 from .base import Base
-from sqlalchemy import String, ForeignKey, Enum, ARRAY
+from sqlalchemy import String, ForeignKey, Enum, ARRAY, Integer
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 import enum
@@ -16,6 +16,7 @@ class Genders(enum.Enum):
     GIRL: str = "girl"
 
 
+
 class Profile(Base):
     __tablename__ = "profiles"
     
@@ -26,6 +27,7 @@ class Profile(Base):
     profileImages: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=True)
     hobbies: Mapped[list[str]] = mapped_column(MutableList.as_mutable(ARRAY(String)), nullable=True)
     bio: Mapped[str] = mapped_column(nullable=True)
+    followers: Mapped[list[int]] = mapped_column(MutableList.as_mutable(ARRAY(Integer)), nullable=True)
     
     user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False, unique=True)
     user: Mapped["User"] = relationship(back_populates="profile")
