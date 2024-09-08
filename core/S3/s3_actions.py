@@ -46,10 +46,30 @@ class S3Client():
                 detail=f"{str(e)}"
             )
             
-            
         return {
             "message": f"filename: {file.filename}"
         }
+        
+        
+    async def delete_files(
+        self,
+        filenames: list[str]
+    ):
+        try:
+            async with self.get_client() as client:
+                for filename in filenames:
+                    await client.delete_object(Key=filename, Bucket=self.bucket_name)
+        except Exception as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"{str(e)}"
+            )
+        
+        return {
+            "message": f"deleted all files"
+        }
     
+
+
 
 s3_client = S3Client()

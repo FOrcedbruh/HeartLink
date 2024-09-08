@@ -4,7 +4,7 @@ from fastapi import Depends, status, UploadFile, HTTPException
 from api.v1.auth.schemas import UserSchema
 from core.models import Profile
 from core import s3_client, settings
-from botocore.exceptions import MissingParametersError
+from botocore.exceptions import InvalidConfigError
 from .schemas import ProfileSchema
 
 async def create_profile(session: AsyncSession, profile_in: dict, authUser: UserSchema) -> dict:
@@ -66,7 +66,7 @@ async def set_photos(session: AsyncSession, files: list[UploadFile], authUser: U
     try:
         await s3_client.upload_files(files=files)
         
-    except MissingParametersError as e:
+    except InvalidConfigError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Data sending error: {e}"
@@ -98,3 +98,26 @@ async def get_profile(session: AsyncSession, authUser: UserSchema):
         bio=profile.bio,
         gender=profile.gender
     )
+    
+
+
+
+async def delete_profileImages(authUser: UserSchema, filenames: list[str]):
+    user = authUser
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not Found"
+        )
+    try:
+        await s3_client.delete_files(filenames=filenames)
+    except InvalidConfigError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Error: {str(e)}"
+        )
+    
+    return {
+        "status": status.HTTP_200_OK,
+        "message": "Deleted"
+    }
