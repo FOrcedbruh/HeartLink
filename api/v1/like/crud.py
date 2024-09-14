@@ -3,9 +3,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends, Body, HTTPException, status, Form
 from core.models import Like
 from api.v1.auth.actions import get_current_auth_user
+from api.v1.auth.schemas import UserSchema
+from sqlalchemy import select
+from core.models import Profile
 
 
-def LikeForm(liked_profile_id: int = Form(), profile_id: int = Form(), authUser = Depends(get_current_auth_user)) -> LikeCreateSchema:
+def LikeForm(liked_profile_id: int = Form(), profile_id: int = Form(), authUser: UserSchema = Depends(get_current_auth_user)) -> LikeCreateSchema:
     if not authUser:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -39,4 +42,27 @@ async def like_profile(session: AsyncSession, like_in: LikeCreateSchema) -> dict
             ),
         "status": status.HTTP_201_CREATED
     }
+
+
+
+async def my_likes(profile_id: int, session: AsyncSession) -> list[LikeSchema]:
+    st = await session.execute(select(Like).filter(Like.liked_profile_id == profile_id))
+    likes = st.scalars().all()
     
+    return list(likes)
+
+
+
+    
+    
+
+async def check_like_profile(session: AsyncSession, profile_id: int) -> dict:
+    st = await session.execute(select(Profile).filter(Profile.id == profile_id))
+    profile = st.scalars().first()
+    
+    
+    
+    return {
+        "status": status.HTTP_200_OK,
+        "profile": profile
+    }

@@ -4,7 +4,7 @@ from core import db_conn
 from .schemas import UserRegistrationSchema, UserLoginSchema, UserSchema
 from .actions import TokenInfo, create_access_token, create_refresh_token, http_bearer, get_current_auth_user, get_current_auth_user_for_refresh
 from sqlalchemy import select
-from core.models import User, Profile
+from core.models import User
 from . import utils
 from sqlalchemy.orm import joinedload
 

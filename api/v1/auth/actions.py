@@ -1,5 +1,5 @@
 from . import utils
-from .schemas import UserSchema, UserRegistrationSchema, UserLoginSchema
+from .schemas import UserSchema
 from core import settings, db_conn
 from pydantic import BaseModel
 from fastapi import Depends, HTTPException, status, Form
