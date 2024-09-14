@@ -121,3 +121,15 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str]):
         "status": status.HTTP_200_OK,
         "message": "Deleted"
     }
+    
+    
+    
+async def feed(session: AsyncSession, gender_in: str) -> dict:
+    st = await session.execute(select(Profile).filter(Profile.gender == gender_in))
+    profiles = st.scalars().all()
+    
+    
+    return {
+        "status": status.HTTP_200_OK,
+        "profiles": list(profiles)
+    }

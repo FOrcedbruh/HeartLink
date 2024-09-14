@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Depends, Form
+from fastapi import APIRouter, File, UploadFile, Depends, Form, Body
 from core import db_conn
 from sqlalchemy.ext.asyncio import AsyncSession
 from . import crud, utils
@@ -40,3 +40,8 @@ async def set_photos(session: AsyncSession = Depends(db_conn.sesion_creation), a
 async def delete_images(authUser: UserSchema = Depends(get_current_auth_user), filenames: list[str] = Form()):
     return await crud.delete_profileImages(authUser=authUser, filenames=filenames)
 
+
+
+@router.post("/feed")
+async def feed(session: AsyncSession = Depends(db_conn.sesion_creation), gender_in: str = Body()):
+    return await crud.feed(session=session, gender_in=gender_in)
