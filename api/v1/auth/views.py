@@ -6,7 +6,6 @@ from .actions import TokenInfo, create_access_token, create_refresh_token, http_
 from sqlalchemy import select
 from core.models import User
 from . import utils
-from sqlalchemy.orm import joinedload
 
 
 
@@ -35,8 +34,8 @@ async def registration(response: Response, session: AsyncSession = Depends(db_co
         access_token = create_access_token(user=user)
         refresh_token = create_refresh_token(user=user)
         
-        response.set_cookie(key="access_token", value=access_token)
-        response.set_cookie(key="refresh_token", value=refresh_token)
+        response.set_cookie(key="access_token", value=access_token, samesite="strict", max_age=60*60*24*5, httponly=True)
+        response.set_cookie(key="refresh_token", value=refresh_token, samesite="strict",  max_age=60*60*24*5, httponly=True)
         
         return TokenInfo(
             access_token=access_token,
@@ -65,13 +64,14 @@ async def login(response: Response, session: AsyncSession = Depends(db_conn.sesi
             access_token = create_access_token(user=user)
             refresh_token = create_refresh_token(user=user)
             
-            response.set_cookie(key="access_token", value=access_token)
-            response.set_cookie(key="refresh_token", value=refresh_token)
+            response.set_cookie(key="access_token", value=access_token, samesite="strict",  max_age=60*60*24*5, httponly=True)
+            response.set_cookie(key="refresh_token", value=refresh_token, samesite="strict",  max_age=60*60*24*5, httponly=True)
             
             return TokenInfo(
                 access_token=access_token,
                 refresh_token=refresh_token
             )
+
 
 
 @router.post("/logout")
@@ -127,7 +127,7 @@ async def refresh(
     ) -> TokenInfo:
     access_token = create_access_token(user=authUser)
     
-    response.set_cookie(key="access_token", value=access_token)
+    response.set_cookie(key="access_token", value=access_token, samesite="strict", max_age=60*60*24*5, httponly=True)
     
     return TokenInfo(
         access_token=access_token,

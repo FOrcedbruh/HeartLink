@@ -3,7 +3,7 @@ from core import settings
 import bcrypt
 import datetime
 from .schemas import UserLoginSchema, UserRegistrationSchema
-from fastapi import Form
+from fastapi import Form, Body
 
 def encode_token(
         expires_minutes: int,
@@ -35,14 +35,14 @@ def validation_password(
         return bcrypt.checkpw(password=password.encode(), hashed_password=hashed_password)
     
 
-def registrationForm(username: str = Form(), email: str = Form(), password: str = Form()) -> UserRegistrationSchema:
+def registrationForm(username: str = Body(), email: str = Body(), password: str = Body()) -> UserRegistrationSchema:
     return UserRegistrationSchema(
         username=username,
         email=email,
         password=password
     )
 
-def loginForm(email: str = Form(), password: str = Form()) -> UserLoginSchema:
+def loginForm(email: str = Body(), password: str = Body()) -> UserLoginSchema:
     return UserLoginSchema(
         email=email,
         password=password

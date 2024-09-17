@@ -4,7 +4,8 @@ from api.v1 import router as APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from core import settings
 
-origins = [settings.cors.origin]
+origins = [f"{str(settings.cors.origin)}"]
+
 
 app = FastAPI()
 app.include_router(router=APIRouter)
