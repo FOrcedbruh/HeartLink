@@ -1,4 +1,4 @@
-from fastapi import APIRouter, File, UploadFile, Depends, Form, Body
+from fastapi import APIRouter, File, UploadFile, Depends, Form
 from core import db_conn
 from sqlalchemy.ext.asyncio import AsyncSession
 from . import crud, utils
@@ -10,7 +10,7 @@ from .schemas import ProfileSchema
 router = APIRouter(prefix="/profile", tags=["Profiles"])
 
 
-@router.post("/", response_model_exclude_none=True, response_model=ProfileSchema)
+@router.get("/", response_model_exclude_none=True, response_model=ProfileSchema)
 async def get_profile(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user)):
     return await crud.get_profile(session=session, authUser=authUser)
 
@@ -43,5 +43,5 @@ async def delete_images(authUser: UserSchema = Depends(get_current_auth_user), f
 
 
 @router.post("/feed")
-async def feed(session: AsyncSession = Depends(db_conn.sesion_creation), gender_in: str = Body()):
+async def feed(session: AsyncSession = Depends(db_conn.sesion_creation), gender_in: str = Form()):
     return await crud.feed(session=session, gender_in=gender_in)

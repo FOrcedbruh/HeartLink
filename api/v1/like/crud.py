@@ -1,6 +1,6 @@
 from .schemas import LikeCreateSchema, LikeSchema
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import Depends, Body, HTTPException, status, Form
+from fastapi import Depends, Body, HTTPException, status
 from core.models import Like
 from api.v1.auth.actions import get_current_auth_user
 from api.v1.auth.schemas import UserSchema
@@ -8,7 +8,7 @@ from sqlalchemy import select
 from core.models import Profile
 
 
-def LikeForm(liked_profile_id: int = Form(), profile_id: int = Form(), authUser: UserSchema = Depends(get_current_auth_user)) -> LikeCreateSchema:
+def LikeForm(liked_profile_id: int = Body(), profile_id: int = Body(), authUser: UserSchema = Depends(get_current_auth_user)) -> LikeCreateSchema:
     if not authUser:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

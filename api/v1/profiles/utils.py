@@ -1,9 +1,9 @@
-from fastapi import Form
+from fastapi import Body
 
 
 def create_profileForm(
-        firstname: str = Form(),
-        surname: str = Form(),
+        firstname: str = Body(),
+        surname: str = Body(),
     ) -> dict:
         return {
             "firstname": firstname,
@@ -11,8 +11,8 @@ def create_profileForm(
         }
 
 def update_gender_and_ageForm(
-        gender: str = Form(),
-        age: int = Form(),
+        gender: str = Body(),
+        age: int = Body(),
     ) -> dict:
         return {
             "gender": gender,
@@ -20,8 +20,8 @@ def update_gender_and_ageForm(
         }
 
 def update_bio_and_hobbiesForm(
-        bio: str = Form(),
-        hobbies: list[str] = Form()
+        bio: str = Body(),
+        hobbies: list[str] = Body()
     ) -> dict:
     return {
         "bio": bio,
