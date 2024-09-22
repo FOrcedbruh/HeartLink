@@ -88,6 +88,9 @@ async def get_profile(session: AsyncSession, authUser: UserSchema):
     st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
     profile = st.scalars().first()
     
+    if not profile:
+        return ""
+    
     return ProfileSchema(
         user_id=profile.user_id,
         age=profile.age,

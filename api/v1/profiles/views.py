@@ -10,7 +10,7 @@ from .schemas import ProfileSchema
 router = APIRouter(prefix="/profile", tags=["Profiles"])
 
 
-@router.get("/", response_model_exclude_none=True, response_model=ProfileSchema)
+@router.get("/", response_model_exclude_none=True)
 async def get_profile(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user)):
     return await crud.get_profile(session=session, authUser=authUser)
 
