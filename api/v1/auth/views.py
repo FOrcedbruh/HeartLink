@@ -21,7 +21,7 @@ async def registration(response: Response, session: AsyncSession = Depends(db_co
     if candidate:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The user already exists"
+            detail="Пользователь уже существует"
         )
     else:
         hashed_passowrd: bytes = utils.hash_passowrd(user_in.password)
@@ -51,14 +51,14 @@ async def login(response: Response, session: AsyncSession = Depends(db_conn.sesi
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="The user doesn't exist"
+            detail="Такого пользователя не существует"
         )
     else:
         isValid_password: bool = utils.validation_password(user.password, user_in.password)
         if isValid_password == False:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Incorrect password"
+                detail="Неверные пароль и/или почта"
             )
         else:
             access_token = create_access_token(user=user)
@@ -80,7 +80,7 @@ async def logout(response: Response) -> dict:
     response.delete_cookie("refresh_token")
     
     return {
-        "message": "Successfull Log out",
+        "message": "Успешный выход из аккаунта",
         "status": status.HTTP_200_OK
     }
     
@@ -106,7 +106,7 @@ async def delete_user(user_id: int, session: AsyncSession = Depends(db_conn.sesi
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="User not found"
+            detail="Пользователь не найден"
         )
         
     await session.delete(user)
