@@ -11,10 +11,8 @@ if TYPE_CHECKING:
 
 
 class Genders(enum.Enum):
-    MALE: str = "male"
-    FEMALE: str = "female"
-    BOY: str = "boy"
-    GIRL: str = "girl"
+    MALE: str = "Мужчина"
+    FEMALE: str = "Женщина"
 
 
 
