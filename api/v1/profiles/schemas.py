@@ -13,6 +13,7 @@ class ProfileSchema(BaseModel):
     profileImage: list[str] | None
     hobbies: list[str] | None
     bio: str | None = Field(max_length=300) 
+    currentStage: int
 
 class ProfileProtectSchema(ProfileSchema):
     id: int

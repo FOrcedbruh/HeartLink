@@ -4,6 +4,7 @@ from api.v1 import router as APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from core import settings
 
+
 origins = [f"{str(settings.cors.origin)}"]
 
 

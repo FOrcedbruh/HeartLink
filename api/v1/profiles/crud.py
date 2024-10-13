@@ -26,6 +26,7 @@ async def update_gender_and_age(session: AsyncSession, profile_in: dict, authUse
     
     profile.gender = profile_in.get("gender")
     profile.age = profile_in.get("age")
+    profile.currentStage = profile_in.get("currentStage")
     
     await session.commit()
     
@@ -41,6 +42,7 @@ async def update_hobbies_and_boi(session: AsyncSession, profile_in: dict, authUs
     
     profile.bio = profile_in.get("bio")
     profile.hobbies = profile_in.get("hobbies")
+    profile.currentStage = profile_in.get("currentStage")
     
     await session.commit()
     
@@ -99,7 +101,8 @@ async def get_profile(session: AsyncSession, authUser: UserSchema):
         hobbies=profile.hobbies,
         profileImage=profile.profileImages,
         bio=profile.bio,
-        gender=profile.gender
+        gender=profile.gender,
+        currentStage=profile.currentStage
     )
     
 
@@ -136,3 +139,9 @@ async def feed(session: AsyncSession, gender_in: str) -> dict:
         "status": status.HTTP_200_OK,
         "profiles": list(profiles)
     }
+
+async def get_profile_stage(session: AsyncSession, authUser: UserSchema) -> int:
+    st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
+    profile = st.scalars().first()
+
+    return profile.currentStage

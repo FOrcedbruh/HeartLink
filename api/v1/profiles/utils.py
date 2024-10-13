@@ -8,6 +8,7 @@ def create_profileForm(
         return {
             "firstname": firstname,
             "surname": surname,
+            "currentStage": 1
         }
 
 def update_gender_and_ageForm(
@@ -16,7 +17,8 @@ def update_gender_and_ageForm(
     ) -> dict:
         return {
             "gender": gender,
-            "age": age
+            "age": age,
+            "currentStage": 2
         }
 
 def update_bio_and_hobbiesForm(
@@ -25,6 +27,7 @@ def update_bio_and_hobbiesForm(
     ) -> dict:
     return {
         "bio": bio,
-        "hobbies": hobbies
+        "hobbies": hobbies,
+        "currentStage": 3
     }
     
