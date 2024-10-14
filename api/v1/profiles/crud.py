@@ -130,15 +130,18 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str]):
     
     
     
-async def feed(session: AsyncSession, gender_in: str) -> dict:
-    st = await session.execute(select(Profile).filter(Profile.gender == gender_in))
+async def feed(session: AsyncSession, gender_in: str, limit: int = 7) -> dict:
+    st = await session.execute(select(Profile).filter(Profile.gender != gender_in).offset(0).limit(limit))
     profiles = st.scalars().all()
     
+
     
     return {
         "status": status.HTTP_200_OK,
         "profiles": list(profiles)
     }
+
+
 
 async def get_profile_stage(session: AsyncSession, authUser: UserSchema) -> int:
     st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
