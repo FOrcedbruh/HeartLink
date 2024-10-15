@@ -74,7 +74,7 @@ async def set_photos(session: AsyncSession, files: list[UploadFile], authUser: U
             detail=f"Data sending error: {e}"
         )
     
-    profile.profileImages = photosUrls
+    profile.profileImages += photosUrls
     
     await session.commit()
     
@@ -99,7 +99,7 @@ async def get_profile(session: AsyncSession, authUser: UserSchema):
         firstname=profile.firstname,
         surname=profile.surname,
         hobbies=profile.hobbies,
-        profileImage=profile.profileImages,
+        profileImages=profile.profileImages,
         bio=profile.bio,
         gender=profile.gender,
         currentStage=profile.currentStage

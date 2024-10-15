@@ -10,7 +10,7 @@ class ProfileSchema(BaseModel):
     surname: str
     gender: str | None
     age: int | None
-    profileImage: list[str] | None
+    profileImages: list[str] | None
     hobbies: list[str] | None
     bio: str | None = Field(max_length=300) 
     currentStage: int
