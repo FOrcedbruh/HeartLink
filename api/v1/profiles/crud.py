@@ -54,34 +54,40 @@ async def update_hobbies_and_boi(session: AsyncSession, profile_in: dict, authUs
 
 
 async def set_photos(session: AsyncSession, files: list[UploadFile], authUser: UserSchema):
-    st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
-    profile = st.scalars().first()
-    photosUrls: list[str] = []
-    if not files:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Files not found"
-        )
-    for file in files:
-        photosUrls.append( settings.s3.get_url + "/" + file.filename)
-
     try:
-        await s3_client.upload_files(files=files)
+        st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
+        profile = st.scalars().first()
+        photosUrls: list[str] = []
+        if not files:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Files not found"
+            )
+        for file in files:
+            photosUrls.append( settings.s3.get_url + "/" + file.filename)
+
+        try:
+            await s3_client.upload_files(files=files)
+            
+        except InvalidConfigError as e:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Data sending error: {e}"
+            )
         
-    except InvalidConfigError as e:
+        profile.profileImages += photosUrls
+        
+        await session.commit()
+        
+        return {
+            "status": status.HTTP_200_OK,
+            "detail": "Updated"
+        }
+    except:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Data sending error: {e}"
+            detail="Server error"
         )
-    
-    profile.profileImages += photosUrls
-    
-    await session.commit()
-    
-    return {
-        "status": status.HTTP_200_OK,
-        "detail": "Updated"
-    }
     
     
 
