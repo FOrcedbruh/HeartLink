@@ -8,6 +8,7 @@ from core import settings
 origins = [f"{str(settings.cors.origin)}"]
 
 
+
 app = FastAPI()
 app.include_router(router=APIRouter)
 app.add_middleware(

@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from fastapi import Depends, status, UploadFile, HTTPException
+from fastapi import status, UploadFile, HTTPException
 from api.v1.auth.schemas import UserSchema
 from core.models import Profile
 from core import s3_client, settings
@@ -53,41 +53,38 @@ async def update_hobbies_and_boi(session: AsyncSession, profile_in: dict, authUs
     
 
 
-async def set_photos(session: AsyncSession, files: list[UploadFile], authUser: UserSchema):
-    try:
-        st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
-        profile = st.scalars().first()
-        photosUrls: list[str] = []
-        if not files:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Files not found"
-            )
-        for file in files:
-            photosUrls.append( settings.s3.get_url + "/" + file.filename)
+async def update_photos(session: AsyncSession, files: list[UploadFile], authUser: UserSchema):
+    st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
+    profile = st.scalars().first()
+    photosUrls: list[str] = []
+    if not files:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Files not found"
+        )
+    for file in files:
+        photosUrls.append(settings.s3.get_url + "/" + file.filename)
 
-        try:
-            await s3_client.upload_files(files=files)
+    try:
+        await s3_client.upload_files(files=files)
             
-        except InvalidConfigError as e:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Data sending error: {e}"
-            )
-        
-        profile.profileImages += photosUrls
-        
-        await session.commit()
-        
-        return {
-            "status": status.HTTP_200_OK,
-            "detail": "Updated"
-        }
-    except:
+    except InvalidConfigError as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Server error"
+            detail=f"Data sending error: {e}"
         )
+    
+    if profile.profileImages:
+        profile.profileImages += photosUrls
+    else:
+        profile.profileImages = photosUrls
+        
+    await session.commit()
+        
+    return {
+        "status": status.HTTP_200_OK,
+        "detail": f"Добавлены изображения ({len(photosUrls)})"
+    }
     
     
 
@@ -114,8 +111,16 @@ async def get_profile(session: AsyncSession, authUser: UserSchema):
 
 
 
-async def delete_profileImages(authUser: UserSchema, filenames: list[str]):
+async def delete_profileImages(authUser: UserSchema, filenames: list[str], session: AsyncSession):
     user = authUser
+    st = await session.execute(select(Profile).filter(Profile.user_id == user.id))
+    profile = st.scalars().first()
+
+    if not profile:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Отсутствует профиль"
+        )
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -123,15 +128,20 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str]):
         )
     try:
         await s3_client.delete_files(filenames=filenames)
+        for filename in filenames:
+                profile.profileImages.remove(filename)
+            
     except InvalidConfigError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Error: {str(e)}"
         )
     
+    await session.commit()
+    
     return {
         "status": status.HTTP_200_OK,
-        "message": "Deleted"
+        "message": f"Изображения удалены ({len(filenames)})"
     }
     
     
