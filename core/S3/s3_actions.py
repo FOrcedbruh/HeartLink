@@ -53,11 +53,12 @@ class S3Client():
         
     async def delete_files(
         self,
-        filenames: list[str]
+        filepaths: list[str]
     ):
         try:
             async with self.get_client() as client:
-                for filename in filenames:
+                for filename in filepaths:
+                    filename = filename[len(settings.s3.storage_url) + 2:]
                     await client.delete_object(Key=filename, Bucket=self.bucket_name)
         except Exception as e:
             raise HTTPException(

@@ -17,3 +17,9 @@ class ProfileSchema(BaseModel):
 
 class ProfileProtectSchema(ProfileSchema):
     id: int
+
+class ProfileUpdateSchema(BaseModel):
+    bio: str | None = None
+    hobbies: list[str] | None = None
+    age: int | None = None
+    surname: str | None = None

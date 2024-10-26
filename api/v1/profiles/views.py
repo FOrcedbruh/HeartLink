@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from . import crud, utils
 from api.v1.auth.actions import get_current_auth_user
 from api.v1.auth.schemas import UserSchema
+from .schemas import ProfileUpdateSchema
 
 
 router = APIRouter(prefix="/profile", tags=["Profiles"])
@@ -35,7 +36,7 @@ async def update_photos(session: AsyncSession = Depends(db_conn.sesion_creation)
     return await crud.update_photos(session=session, authUser=authUser, files=files)
 
 
-@router.delete("/delete/images")
+@router.post("/delete/images")
 async def delete_images(authUser: UserSchema = Depends(get_current_auth_user), filenames: list[str] = Body(), session: AsyncSession = Depends(db_conn.sesion_creation)):
     return await crud.delete_profileImages(authUser=authUser, filenames=filenames, session=session)
 
@@ -48,3 +49,7 @@ async def feed(session: AsyncSession = Depends(db_conn.sesion_creation), gender_
 @router.post("/get_profile_stage")
 async def get_profile_stage(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user)) -> int:
     return await crud.get_profile_stage(session=session, authUser=authUser)
+
+@router.patch("/update")
+async def update_profile(session: AsyncSession = Depends(db_conn.sesion_creation), authUser: UserSchema = Depends(get_current_auth_user), profile_for_update: ProfileUpdateSchema = Body()):
+    return await crud.update_profile(session=session, authUser=authUser, profile_for_update=profile_for_update)

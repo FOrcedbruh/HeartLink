@@ -5,7 +5,7 @@ from api.v1.auth.schemas import UserSchema
 from core.models import Profile
 from core import s3_client, settings
 from botocore.exceptions import InvalidConfigError
-from .schemas import ProfileSchema
+from .schemas import ProfileSchema, ProfileUpdateSchema
 
 async def create_profile(session: AsyncSession, profile_in: dict, authUser: UserSchema) -> dict:
     profile_in["user_id"] = authUser.id
@@ -127,9 +127,8 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str], sessi
             detail="User not Found"
         )
     try:
-        await s3_client.delete_files(filenames=filenames)
-        for filename in filenames:
-                profile.profileImages.remove(filename)
+        await s3_client.delete_files(filepaths=filenames)
+        
             
     except InvalidConfigError as e:
         raise HTTPException(
@@ -137,6 +136,9 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str], sessi
             detail=f"Error: {str(e)}"
         )
     
+
+    for filename in filenames:
+            profile.profileImages.remove(filename)
     await session.commit()
     
     return {
@@ -146,15 +148,35 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str], sessi
     
     
     
-async def feed(session: AsyncSession, gender_in: str, limit: int = 7) -> dict:
+async def feed(session: AsyncSession, gender_in: str, limit: int = 1) -> dict:
     st = await session.execute(select(Profile).filter(Profile.gender != gender_in).offset(0).limit(limit))
-    profiles = st.scalars().all()
+    profile = st.scalars().first()
     
 
     
     return {
         "status": status.HTTP_200_OK,
-        "profiles": list(profiles)
+        "profile": profile
+    }
+
+async def update_profile(session: AsyncSession, authUser: UserSchema, profile_for_update: ProfileUpdateSchema) -> dict:
+    st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
+    profile = st.scalars().first()
+
+    if not profile:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Ошибка изменения профиля"
+        )
+
+    for name, value in profile_for_update.model_dump(exclude_none=True).items():
+        setattr(profile, name, value)
+    
+    await session.commit()
+
+    return {
+        "status": status.HTTP_200_OK,
+        "detail": "Профиль изменен"
     }
 
 
