@@ -14,6 +14,7 @@ class ProfileSchema(BaseModel):
     hobbies: list[str] | None
     bio: str | None = Field(max_length=300) 
     currentStage: int
+    id: int
 
 class ProfileProtectSchema(ProfileSchema):
     id: int
