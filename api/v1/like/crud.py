@@ -38,7 +38,7 @@ async def like_profile(session: AsyncSession, like_in: LikeCreateSchema) -> dict
         "Created like": LikeSchema(
                 liked_profile_id=like.liked_profile_id,
                 profile_id=like.profile_id,
-                id=like.id
+                id=like.id,
             ),
         "status": status.HTTP_201_CREATED
     }

@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+from datetime import datetime
 
 
 class LikeCreateSchema(BaseModel):
@@ -9,3 +9,4 @@ class LikeCreateSchema(BaseModel):
 
 class LikeSchema(LikeCreateSchema):
     id: int
+    like_at: datetime
