@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 class Genders(enum.Enum):
     MALE: str = "Мужчина"
-    FEMALE: str = "Женщина"
+    FEMALE: str = "Девушка"
 
 
 
