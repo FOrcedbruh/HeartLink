@@ -149,8 +149,11 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str], sessi
     
     
     
-async def feed(session: AsyncSession, gender_in: str, limit: int = 7) -> dict:
-    st = await session.execute(select(Profile).filter(Profile.gender != gender_in).offset(0).limit(limit))
+async def feed(session: AsyncSession, gender_in: str) -> dict:
+    st = await session.execute(select(Profile).filter(
+        Profile.gender != gender_in,
+        Profile.profileImages != []
+    ))
     profiles = st.scalars().all()
     
 
