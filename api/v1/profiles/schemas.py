@@ -24,3 +24,4 @@ class ProfileUpdateSchema(BaseModel):
     hobbies: list[str] | None = None
     age: int | None = None
     surname: str | None = None
+    firstname: str | None = None
