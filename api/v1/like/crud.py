@@ -66,3 +66,29 @@ async def check_like_profile(session: AsyncSession, profile_id: int) -> dict:
         "status": status.HTTP_200_OK,
         "profile": profile
     }
+
+def GetCountForm(profile_id: int = Body(), AuthUser: UserSchema = Depends(get_current_auth_user)) -> int:
+    if not AuthUser:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Unauth user"
+        )
+    return profile_id
+
+
+
+async def get_likes_count(session: AsyncSession, liked_profile: int):
+    st = await session.execute(select(Like).filter(Like.liked_profile_id == liked_profile))
+    likes = st.scalars().all()
+
+    if len(likes) == 0:
+        return {
+            "status": status.HTTP_200_OK,
+            "count": None
+        }
+    
+    return {
+        "status": status.HTTP_200_OK,
+        "count": len(likes)
+    }
+    
