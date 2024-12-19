@@ -28,7 +28,7 @@ async def updateGenderAndAge(session: AsyncSession = Depends(db_conn.sesion_crea
 
 @router.patch("/update_bio_hobbies")
 async def updateBioAndHobbies(session: AsyncSession = Depends(db_conn.sesion_creation), profile_in: dict = Depends(utils.update_bio_and_hobbiesForm), authUser: UserSchema = Depends(get_current_auth_user)):
-    return await crud.update_hobbies_and_boi(session=session, profile_in=profile_in, authUser=authUser)
+    return await crud.update_hobbies_and_bio(session=session, profile_in=profile_in, authUser=authUser)
 
 
 @router.patch("/update/images")

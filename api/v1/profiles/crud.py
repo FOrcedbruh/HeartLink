@@ -36,7 +36,7 @@ async def update_gender_and_age(session: AsyncSession, profile_in: dict, authUse
         "detail": "Updated"
     }
     
-async def update_hobbies_and_boi(session: AsyncSession, profile_in: dict, authUser: UserSchema) -> dict:
+async def update_hobbies_and_bio(session: AsyncSession, profile_in: dict, authUser: UserSchema) -> dict:
     st = await session.execute(select(Profile).filter(Profile.user_id == authUser.id))
     profile = st.scalars().first()
     
@@ -128,7 +128,8 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str], sessi
             detail="User not Found"
         )
     try:
-        await s3_client.delete_files(filepaths=filenames)
+        filenames_to_delete: list[str] = [filename[len(settings.s3.get_url) + 1:] for filename in filenames]
+        await s3_client.delete_files(filenames=filenames_to_delete)
         
             
     except InvalidConfigError as e:
@@ -139,7 +140,7 @@ async def delete_profileImages(authUser: UserSchema, filenames: list[str], sessi
     
 
     for filename in filenames:
-            profile.profileImages.remove(filename)
+        profile.profileImages.remove(filename)
     await session.commit()
     
     return {

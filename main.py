@@ -19,7 +19,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
- 
+
+
+
 @app.get("/")
 def get_home():
     return {
