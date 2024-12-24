@@ -2,7 +2,7 @@ import jwt
 from core import settings
 import bcrypt
 import datetime
-from .schemas import UserLoginSchema, UserRegistrationSchema
+from schemas.users import UserLoginSchema, UserRegistrationSchema
 from fastapi import Body
 
 def encode_token(

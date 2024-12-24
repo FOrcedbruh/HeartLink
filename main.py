@@ -1,16 +1,16 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 import uvicorn
-from api.v1 import router as APIRouter
+from presentation import router as ApiV2Router
 from fastapi.middleware.cors import CORSMiddleware
 from core import settings
-
+from repositories.base.exceptions.exceptions import BaseException
 
 origins = [f"{str(settings.cors.origin)}"]
 
 
 
 app = FastAPI()
-app.include_router(router=APIRouter)
+app.include_router(router=ApiV2Router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -28,7 +28,12 @@ def get_home():
         "message": "Welcome to HeartLink"
     }
 
-
+@app.exception_handler(BaseException)
+def exc_index(req, exc: BaseException):
+    raise HTTPException(
+        status_code=exc.status,
+        detail=exc.detail
+    )
     
     
 if __name__ == "__main__":
