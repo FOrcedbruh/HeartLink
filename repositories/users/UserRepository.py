@@ -43,7 +43,7 @@ class UserRepository(BaseRepository[User]):
 
         return res
     
-    async def get_current_auth_user(self,email: str) -> User:
+    async def get_current_auth_user(self, email: str) -> User:
         query = select(self.model).where(self.model.email == email)
         stmt = await self.session.execute(query)
         res = stmt.scalars().first()

@@ -1,5 +1,5 @@
 import jwt
-from core import settings
+from config import settings
 import bcrypt
 import datetime
 from schemas.users import UserLoginSchema, UserRegistrationSchema

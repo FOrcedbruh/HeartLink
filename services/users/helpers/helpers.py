@@ -1,9 +1,8 @@
 from config.utils.auth import utils
 from schemas.users import UserSchema
-from core import settings
+from config import settings
 from pydantic import BaseModel
 from jwt import InvalidTokenError
-from sqlalchemy import select
 from ..exceptions.exceptions import TokenTypeException, InvalidTokenException
 
 

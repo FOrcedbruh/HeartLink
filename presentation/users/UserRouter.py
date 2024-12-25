@@ -5,8 +5,10 @@ from config.utils.auth import utils
 from fastapi.security import HTTPBearer, OAuth2PasswordBearer
 
 
+
 http_bearer = HTTPBearer(auto_error=False)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login/")
+
 router = APIRouter(prefix="/auth", tags=["Auth"], dependencies=[Depends(http_bearer)])
 
 
@@ -31,3 +33,11 @@ async def index(
     service: UserService = Depends(UserService)
 ) -> UserReadSchema:
     return await service.me(token=token)
+
+
+@router.post("/refresh")
+async def index(
+    token: str = Depends(oauth2_scheme),
+    service: UserService = Depends(UserService)
+): 
+    return await service.refresh(token=token)

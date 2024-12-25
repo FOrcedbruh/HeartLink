@@ -68,6 +68,16 @@ class UserService:
             registered_at=auth_user.registered_at
         )
     
+    async def refresh(self, token: str):
+        payload: dict = helpers.get_current_token(token=token)
+        email: str = await helpers.get_current_auth_user_for_refresh(payload=payload)
 
+        auth_user = await self.repository.get_current_auth_user(email=email)
 
+        access_token: str = helpers.create_access_token(user=auth_user)
+
+        return helpers.TokenInfo(
+            access_token=access_token,
+            refresh_token=None
+        )
 
