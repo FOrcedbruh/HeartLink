@@ -4,6 +4,7 @@ from models import Profile
 from .exceptions.exceptions import ProfileNotFoundException
 from sqlalchemy import select
 
+
 class ProfileRepository(BaseRepository[Profile]):
     model = Profile
     exception: ProfileNotFoundException = ProfileNotFoundException()
@@ -26,3 +27,35 @@ class ProfileRepository(BaseRepository[Profile]):
         await self.session.refresh(profile)
 
         return profile
+    
+    async def update_images(self, data: list[str], id: int) -> Profile:
+        profile = await self.session.get(self.model, id)
+
+        if not profile:
+            raise ProfileNotFoundException()
+        
+        if not profile.profileImages:
+            profile.profileImages = data
+        else:
+            profile.profileImages.extend(data)
+
+        await self.session.commit()
+        await self.session.refresh(profile)
+
+        return profile
+    
+    async def erase_images(self, data: list[str], id: int) -> Profile:
+        profile = await self.session.get(self.model, id)
+
+        if not profile:
+            raise ProfileNotFoundException()
+        
+        for el in data:
+            profile.profileImages.remove(el)
+
+        await self.session.commit()
+        await self.session.refresh(profile)
+
+        return profile
+
+        

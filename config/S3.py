@@ -39,9 +39,6 @@ class S3Client():
                 filename: str = file.filename
                 await client.put_object(Key=filename, Body=contents, Bucket=self.bucket_name)
         
-        return {
-            "message": f"Добавлены фото ({len(files)})"
-        }
     async def delete_files(
         self,
         filenames: list[str]
@@ -51,8 +48,4 @@ class S3Client():
             objects_to_delete.append({"Key": filename})
         async with self.get_client() as client:
             await client.delete_objects(Bucket=self.bucket_name, Delete={"Objects": objects_to_delete})
-        
-        return {
-            "message": "deleted all files"
-        }
 

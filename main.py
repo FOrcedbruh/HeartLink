@@ -9,7 +9,9 @@ origins = [f"{str(settings.cors.origin)}"]
 
 
 
-app = FastAPI()
+app = FastAPI(
+    description="HeartLink API"
+)
 app.include_router(router=ApiV2Router)
 app.add_middleware(
     CORSMiddleware,
