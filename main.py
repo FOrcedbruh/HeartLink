@@ -10,7 +10,8 @@ origins = [f"{str(settings.cors.origin)}"]
 
 
 app = FastAPI(
-    description="HeartLink API"
+    title="HeartLink API",
+    description="A Server side of HeartLink, dev with python and fastapi"
 )
 app.include_router(router=ApiV2Router)
 app.add_middleware(

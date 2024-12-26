@@ -12,7 +12,7 @@ REFRESH_TYPE = "refresh"
 
 
 
-
+# Метод создает JWT
 def create_token(
         data: dict,
         token_type: str,
@@ -22,7 +22,7 @@ def create_token(
     payload.update(data)
     return utils.encode_token(payload=payload, expires_minutes=expires_minutes)
 
-
+# Метод создает токен доступа
 def create_access_token(
     user: UserSchema
 ) -> str:
@@ -34,7 +34,7 @@ def create_access_token(
     return create_token(data=data, token_type=ACCESS_TYPE, expires_minutes=settings.jwt.access_token_expires_minutes)
 
 
-
+# Метод создает токен обновления
 def create_refresh_token(
     user: UserSchema
 ) -> str:
@@ -49,7 +49,8 @@ class TokenInfo(BaseModel):
     refresh_token: str | None
     token_type: str = "Bearer"
 
-
+# Метод получает текущий токен авторизованного пользователя
+# Метод возвращает декодированный payload токена
 def get_current_token(
         token: str
     ) -> dict:
@@ -61,8 +62,8 @@ def get_current_token(
         
     return payload
 
-
-async def get_current_auth_user(payload: dict):
+# Метод возращает почту текущего авторизованного пользователя
+async def get_current_auth_user(payload: dict) -> str:
     email: str | None = payload.get('sub')
     token_type: str = payload.get(TOKEN_TYPE_FIELD)
     if token_type != ACCESS_TYPE:
@@ -70,7 +71,8 @@ async def get_current_auth_user(payload: dict):
     
     return email
     
-async def get_current_auth_user_for_refresh(payload: dict):
+# Метод возвращает почту пользователя для обновления токена доступа
+async def get_current_auth_user_for_refresh(payload: dict) -> str:
     email: str | None = payload.get('sub')
     token_type: str = payload.get(TOKEN_TYPE_FIELD)
     if token_type != REFRESH_TYPE:

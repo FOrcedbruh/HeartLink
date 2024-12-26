@@ -1,6 +1,6 @@
 from ...base.exceptions.exceptions import BaseException
 
-PROFILE_NOT_FOUNT_DETAIL: str = "Профиль не найден"
+PROFILE_NOT_FOUNT_DETAIL: str = "Профили не найдены"
 
 class ProfileNotFoundException(BaseException):
     status: int = 400

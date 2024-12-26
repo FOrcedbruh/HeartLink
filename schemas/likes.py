@@ -9,4 +9,4 @@ class LikeCreateSchema(BaseModel):
 
 class LikeSchema(LikeCreateSchema):
     id: int
-    like_at: datetime
+    liked_at: datetime

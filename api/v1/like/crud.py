@@ -51,11 +51,6 @@ async def my_likes(profile_id: int, session: AsyncSession) -> list[LikeSchema]:
     
     return list(likes)
 
-
-
-    
-    
-
 async def check_like_profile(session: AsyncSession, profile_id: int) -> dict:
     st = await session.execute(select(Profile).filter(Profile.id == profile_id))
     profile = st.scalars().first()

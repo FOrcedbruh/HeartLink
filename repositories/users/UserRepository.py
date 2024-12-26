@@ -1,13 +1,16 @@
 from ..base.base_repository import BaseRepository
 from models import User
 from sqlalchemy.ext.asyncio import AsyncSession
-from .exceptions.exceptions import UserBaseException, UserNotExistsException, UserExistsException
+from .exceptions.exceptions import UserNotFoundException, UserNotExistsException, UserExistsException
 from sqlalchemy import select
 
 
+# Репозиторий пользователей (auth), представляет методы для взаимодействия с базой данных (Таблицей Users)
+# Наследуется от базового репозитория, в результате чего имеет все его базовые методы CRUD
+
 class UserRepository(BaseRepository[User]):
     model: User = User
-    exception: UserBaseException = UserBaseException()
+    exception: UserNotFoundException = UserNotFoundException()
 
     def __init__(self, session: AsyncSession):
         super().__init__(session=session, model=self.model, exception=self.exception)
@@ -43,6 +46,7 @@ class UserRepository(BaseRepository[User]):
 
         return res
     
+    # Метод получения авторизованного пользователя
     async def get_current_auth_user(self, email: str) -> User:
         query = select(self.model).where(self.model.email == email)
         stmt = await self.session.execute(query)

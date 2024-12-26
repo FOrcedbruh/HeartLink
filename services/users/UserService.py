@@ -15,7 +15,7 @@ db = DatabaseConnection(
     db_echo=settings.db.echo
 )
 
-
+# Сервис пользователей, реализующий бизнес-логику авториизации и пользователей
 class UserService:
 
     def __init__(self, session: AsyncSession = Depends(db.sesion_creation)) -> helpers.TokenInfo:
@@ -68,6 +68,8 @@ class UserService:
             registered_at=auth_user.registered_at
         )
     
+    # Метод, обновляющий access токен доступа
+    # Метод принимает refresh токен
     async def refresh(self, token: str):
         payload: dict = helpers.get_current_token(token=token)
         email: str = await helpers.get_current_auth_user_for_refresh(payload=payload)

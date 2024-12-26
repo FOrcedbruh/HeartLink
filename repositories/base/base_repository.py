@@ -8,6 +8,10 @@ from .exceptions.exceptions import BaseException
 ModelType = TypeVar(name="ModelType", bound=Base)
 ExceptionType = TypeVar(name="ExceptionType", bound=BaseException)
 
+
+
+# Базовый репозиторий, который является родтельским для остальных
+# Предоставляет основные методы CRUD
 class BaseRepository(Generic[ModelType]):
 
     def __init__(self, session: AsyncSession, model: ModelType, exception: ExceptionType):
@@ -31,6 +35,8 @@ class BaseRepository(Generic[ModelType]):
 
         if not res:
             raise  self.exception()
+        
+        return res
         
     async def create(self, data: ModelType) -> ModelType:
         self.session.add(data)

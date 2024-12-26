@@ -32,7 +32,7 @@ class ProfileRepository(BaseRepository[Profile]):
         profile = await self.session.get(self.model, id)
 
         if not profile:
-            raise ProfileNotFoundException()
+            raise self.exception
         
         if not profile.profileImages:
             profile.profileImages = data
@@ -48,7 +48,7 @@ class ProfileRepository(BaseRepository[Profile]):
         profile = await self.session.get(self.model, id)
 
         if not profile:
-            raise ProfileNotFoundException()
+            raise self.exception
         
         for el in data:
             profile.profileImages.remove(el)
@@ -57,5 +57,17 @@ class ProfileRepository(BaseRepository[Profile]):
         await self.session.refresh(profile)
 
         return profile
+    
+    async def list_for_feed(self, data: str, limit: int, offset: int) -> list[Profile]:
+        query = select(self.model).offset(offset=offset).limit(limit=limit)
+        
+        stmt = await self.session.execute(query)
+
+        res = stmt.scalars().all()
+
+        if not res:
+            raise self.exception
+
+        return list(res)
 
         
