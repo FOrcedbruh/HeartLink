@@ -1,24 +1,17 @@
 from repositories import UserRepository
-from config.database import DatabaseConnection
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
 from schemas.users import UserRegistrationSchema, UserLoginSchema, UserReadSchema
 from config.utils.auth import utils
 from .helpers import helpers
-from config import settings
 from .exceptions.exceptions import IncorrectPasswordException
 
-db = DatabaseConnection(
-    db_url=settings.db.url,
-    echo_pool=settings.db.echo_pool,
-    pool_size=settings.db.pool_size,
-    db_echo=settings.db.echo
-)
+
 
 # Сервис пользователей, реализующий бизнес-логику авториизации и пользователей
 class UserService:
 
-    def __init__(self, session: AsyncSession = Depends(db.sesion_creation)) -> helpers.TokenInfo:
+    def __init__(self, session: AsyncSession = Depends(helpers.db.sesion_creation)) -> helpers.TokenInfo:
         self.repository = UserRepository(session=session)
 
 
@@ -82,4 +75,12 @@ class UserService:
             access_token=access_token,
             refresh_token=None
         )
+    
+    async def delete_user_with_profile(self, user_id: int) -> dict:
+        await self.repository.delete(id=user_id)
+    
+        return {
+            "message": "Пользователь успешно удален"
+        }
+
 

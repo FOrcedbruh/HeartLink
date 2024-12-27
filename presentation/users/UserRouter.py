@@ -41,3 +41,10 @@ async def index(
     service: UserService = Depends(UserService)
 ): 
     return await service.refresh(token=token)
+
+@router.delete("/delete/{user_id}", response_model=dict)
+async def index(
+    user_id: int,
+    service: UserService = Depends(UserService)
+) -> dict:
+    return await service.delete_user_with_profile(user_id=user_id)

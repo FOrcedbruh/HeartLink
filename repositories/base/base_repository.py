@@ -26,7 +26,7 @@ class BaseRepository(Generic[ModelType]):
         res = stmt.scalars().all()
 
         if not res:
-            raise self.exception()
+            raise self.exception
 
         return res
     
@@ -34,7 +34,7 @@ class BaseRepository(Generic[ModelType]):
         res = await self.session.get(self.model, id)
 
         if not res:
-            raise  self.exception()
+            raise  self.exception
         
         return res
         
@@ -48,7 +48,7 @@ class BaseRepository(Generic[ModelType]):
     async def delete(self, id: int) -> None:
         res = await self.session.get(self.model, id)
         if not res:
-            raise self.exception()
+            raise self.exception
         
         await self.session.delete(res)
         await self.session.commit()

@@ -1,6 +1,6 @@
 from config.utils.auth import utils
 from schemas.users import UserSchema
-from config import settings
+from config import settings, DatabaseConnection
 from pydantic import BaseModel
 from jwt import InvalidTokenError
 from ..exceptions.exceptions import TokenTypeException, InvalidTokenException
@@ -81,3 +81,9 @@ async def get_current_auth_user_for_refresh(payload: dict) -> str:
     return email
     
 
+db = DatabaseConnection(
+    db_url=settings.db.url,
+    echo_pool=settings.db.echo_pool,
+    pool_size=settings.db.pool_size,
+    db_echo=settings.db.echo
+)

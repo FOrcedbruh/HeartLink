@@ -70,4 +70,10 @@ class ProfileRepository(BaseRepository[Profile]):
 
         return list(res)
 
+    async def get_stage(self, id: int) -> int:
+        profile = await self.session.get(self.model, id)
+
+        if not profile:
+            raise self.exception
         
+        return profile.currentStage

@@ -56,8 +56,6 @@ class UserRepository(BaseRepository[User]):
             raise UserNotExistsException()
 
         return res
-        
-        
 
 
         

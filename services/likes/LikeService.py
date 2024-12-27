@@ -2,20 +2,14 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.likes import LikeSchema, LikeCreateSchema
 from repositories.likes.LikeRepository import LikeRepository
 from fastapi import Depends
-from config import DatabaseConnection, settings
 from models import Like
+from .helpers import helpers
 
-db = DatabaseConnection(
-    db_url=settings.db.url,
-    echo_pool=settings.db.echo_pool,
-    pool_size=settings.db.pool_size,
-    db_echo=settings.db.echo
-)
 
 class LikeService:
     
 
-    def __init__(self, session: AsyncSession = Depends(db.sesion_creation)):
+    def __init__(self, session: AsyncSession = Depends(helpers.db.sesion_creation)):
         self.repository = LikeRepository(session=session)
 
     async def like(self, like_in: LikeCreateSchema) -> LikeSchema:

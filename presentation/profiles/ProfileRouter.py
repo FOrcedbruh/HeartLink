@@ -59,4 +59,9 @@ async def index(
 ) -> list[ProfileSchema]:
     return await service.feed(gender_in=gender_in, limit=limit, offset=offset)
 
-
+@router.get("/get_profile_stage/{profile_id}", response_model=dict)
+async def index(
+    profile_id: int,
+    service: ProfileService = Depends(ProfileService)
+) -> dict:
+    return await service.get_profile_stage(profile_id=profile_id)

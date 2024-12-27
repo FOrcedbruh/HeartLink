@@ -2,24 +2,19 @@ from repositories.profiles.ProfileRepository import ProfileRepository
 from repositories.users.UserRepository import UserRepository
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import Depends
-from config import DatabaseConnection, settings, S3Client
+from config import settings, S3Client
 from schemas.profiles import ProfileCreateSchema, ProfileUpdateSchema, ProfileSchema
 from models import Profile
 from .helpers import helpers
 from .exceptions.exceptions import UnAuthUserException
 
-db = DatabaseConnection(
-    db_url=settings.db.url,
-    echo_pool=settings.db.echo_pool,
-    pool_size=settings.db.pool_size,
-    db_echo=settings.db.echo
-)
+
 
 s3 = S3Client()
 
 class ProfileService:
     
-    def __init__(self, session: AsyncSession = Depends(db.sesion_creation)):
+    def __init__(self, session: AsyncSession = Depends(helpers.db.sesion_creation)):
         self.repository = ProfileRepository(session=session)
         self.auth_repository = UserRepository(session=session)
 
@@ -83,3 +78,10 @@ class ProfileService:
             raise UnAuthUserException()
         
         return await self.repository.get_one(id=profile_id)
+    
+    async def get_profile_stage(self, profile_id: int) -> dict:
+        stage: int = await self.repository.get_stage(id=profile_id)
+
+        return {
+            "stage": stage
+        }

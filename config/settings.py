@@ -8,26 +8,29 @@ load_dotenv()
 
 
 DB_URL: str = os.environ.get("DB_URL")
+
 JWT_SECRET: str = os.environ.get("JWT_SECRET")
 CORS_ORIGIN: str = os.environ.get("CORS_ORIGIN")
+
 S3_ACCESS_KEY: str = os.environ.get("S3_ACCESS_KEY")
 S3_SECRET_KEY: str = os.environ.get("S3_SECRET_KEY")
 STORAGE_URL: str = os.environ.get("STORAGE_URL")
 BUCKET_NAME: str = os.environ.get("BUCKET_NAME")
 S3_GET_URL: str = os.environ.get("S3_GET_URL")
+
 PORT: int = os.environ.get("PORT")
 
-# run settings
+# Настройки запуска
 class RunConfig(BaseModel):
     port: int = PORT
 
 
-#cors settings
+# Настройки CORS
 class CORSConfig(BaseModel):
     origin: str = CORS_ORIGIN
 
 
-#db settings
+# Настройки базы данных
 class DBConfig(BaseModel):
     url: str = DB_URL
     echo: bool = True
@@ -35,14 +38,14 @@ class DBConfig(BaseModel):
     pool_size: int = 10
 
 
-#auth settings
+# Настройки JWT
 class JWTConfig(BaseModel):
     secret: str = JWT_SECRET
     access_token_expires_minutes: int = 15
     refresh_token_expires_minutes: int = 60 * 24 * 30
 
 
-#S3 settings
+# Настройки S3
 class S3Storage(BaseModel):
     access_key: str = S3_ACCESS_KEY
     secret_key: str = S3_SECRET_KEY
@@ -51,7 +54,7 @@ class S3Storage(BaseModel):
     get_url: str = S3_GET_URL
 
 
-#ROOT ----------------------------------------------------------------
+#Точка входа для всех настроек ----------------------------------------------------------------
 class Settings(BaseSettings):
     db: DBConfig = DBConfig()
     jwt: JWTConfig =JWTConfig()

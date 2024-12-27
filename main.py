@@ -2,8 +2,8 @@ from fastapi import FastAPI, HTTPException
 import uvicorn
 from presentation import router as ApiV2Router
 from fastapi.middleware.cors import CORSMiddleware
-from core import settings
 from repositories.base.exceptions.exceptions import BaseException
+from config import settings
 
 origins = [f"{str(settings.cors.origin)}"]
 
@@ -11,7 +11,7 @@ origins = [f"{str(settings.cors.origin)}"]
 
 app = FastAPI(
     title="HeartLink API",
-    description="A Server side of HeartLink, dev with python and fastapi"
+    description="A Server side of HeartLink, dev with Python and FastAPI"
 )
 app.include_router(router=ApiV2Router)
 app.add_middleware(
