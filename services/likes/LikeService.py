@@ -1,16 +1,12 @@
-from sqlalchemy.ext.asyncio import AsyncSession
 from schemas.likes import LikeSchema, LikeCreateSchema
 from repositories.likes.LikeRepository import LikeRepository
-from fastapi import Depends
 from models import Like
-from .helpers import helpers
 
 
 class LikeService:
     
-
-    def __init__(self, session: AsyncSession = Depends(helpers.db.sesion_creation)):
-        self.repository = LikeRepository(session=session)
+    def __init__(self, repository: LikeRepository):
+        self.repository = repository
 
     async def like(self, like_in: LikeCreateSchema) -> LikeSchema:
         like_to_create = Like(**like_in.model_dump(exclude_none=True))

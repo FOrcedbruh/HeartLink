@@ -1,7 +1,5 @@
 from repositories.profiles.ProfileRepository import ProfileRepository
 from repositories.users.UserRepository import UserRepository
-from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import Depends
 from config import settings, S3Client
 from schemas.profiles import ProfileCreateSchema, ProfileUpdateSchema, ProfileSchema
 from models import Profile
@@ -14,9 +12,9 @@ s3 = S3Client()
 
 class ProfileService:
     
-    def __init__(self, session: AsyncSession = Depends(helpers.db.sesion_creation)):
-        self.repository = ProfileRepository(session=session)
-        self.auth_repository = UserRepository(session=session)
+    def __init__(self, repository: ProfileRepository, auth_repository: UserRepository):
+        self.repository = repository
+        self.auth_repository = auth_repository
 
 
     async def create_profile(self, profile_in: ProfileCreateSchema):

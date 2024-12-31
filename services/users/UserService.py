@@ -7,15 +7,13 @@ from .helpers import helpers
 from .exceptions.exceptions import IncorrectPasswordException
 
 
-
-# Сервис пользователей, реализующий бизнес-логику авториизации и пользователей
 class UserService:
 
-    def __init__(self, session: AsyncSession = Depends(helpers.db.sesion_creation)) -> helpers.TokenInfo:
-        self.repository = UserRepository(session=session)
+    def __init__(self, repository: UserRepository):
+        self.repository = repository
 
 
-    async def registration(self, user_in: UserRegistrationSchema):
+    async def registration(self, user_in: UserRegistrationSchema) -> helpers.TokenInfo:
         hash_password: bytes = utils.hash_passowrd(password=user_in.password)
 
         new_user = await self.repository.registration(hash_password, user_in.email, user_in.username)
