@@ -32,7 +32,7 @@ class LikeRepository(BaseRepository[Like]):
         res = stmt.scalars().all()
 
         if not res:
-            raise self.exception
+            return 0
 
         return len(list(res))
     

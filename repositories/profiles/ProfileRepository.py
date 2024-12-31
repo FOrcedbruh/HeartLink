@@ -77,3 +77,13 @@ class ProfileRepository(BaseRepository[Profile]):
             raise self.exception
         
         return profile.currentStage
+    
+    async def get_profile_by_user_id(self, id: int) -> Profile:
+        query = select(self.model).where(self.model.user_id == id)
+        stmt = await self.session.execute(query)
+        profile = stmt.scalars().first()
+
+        if not profile:
+            raise self.exception
+        
+        return profile

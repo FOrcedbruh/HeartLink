@@ -16,13 +16,12 @@ async def index(
 ):
     return await service.create_profile(profile_in=profile_in)
 
-@router.get("/{profile_id}")
+@router.get("/", response_model=ProfileSchema)
 async def index(
-    profile_id: int,
     token: str = Depends(oauth2_scheme),
     service: ProfileService = Depends(get_profile_service)
 ) -> ProfileSchema:
-    return await service.get_profile(token=token, profile_id=profile_id)
+    return await service.get_profile(token=token)
 
 
 @router.patch("/update")
