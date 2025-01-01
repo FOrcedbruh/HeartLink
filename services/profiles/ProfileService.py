@@ -69,13 +69,21 @@ class ProfileService:
         return await self.repository.list_for_feed(data=gender_in, offset=offset, limit=limit)
     
 
-    async def get_profile(self, token: str) -> ProfileSchema:
+    async def get_profile_for_auth(self, token: str) -> ProfileSchema:
         auth_user = await helpers.get_auth_user_for_profile(token=token, repository=self.auth_repository)
 
         if not auth_user:
             raise UnAuthUserException()
         
         return await self.repository.get_profile_by_user_id(id=auth_user.id)
+    
+    async def get_profile(self, token: str, profile_id: int) -> ProfileSchema:
+        auth_user = await helpers.get_auth_user_for_profile(token=token, repository=self.auth_repository)
+
+        if not auth_user:
+            raise UnAuthUserException()
+        
+        return await self.repository.get_one(id=profile_id)
     
     async def get_profile_stage(self, profile_id: int) -> dict:
         stage: int = await self.repository.get_stage(id=profile_id)

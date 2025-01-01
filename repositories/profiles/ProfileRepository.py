@@ -59,7 +59,7 @@ class ProfileRepository(BaseRepository[Profile]):
         return profile
     
     async def list_for_feed(self, data: str, limit: int, offset: int) -> list[Profile]:
-        query = select(self.model).offset(offset=offset).limit(limit=limit)
+        query = select(self.model).where(self.model.gender != data).offset(offset=offset).limit(limit=limit)
         
         stmt = await self.session.execute(query)
 

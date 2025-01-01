@@ -21,7 +21,7 @@ async def index(
     token: str = Depends(oauth2_scheme),
     service: ProfileService = Depends(get_profile_service)
 ) -> ProfileSchema:
-    return await service.get_profile(token=token)
+    return await service.get_profile_for_auth(token=token)
 
 
 @router.patch("/update")
@@ -65,3 +65,12 @@ async def index(
     service: ProfileService = Depends(get_profile_service)
 ) -> dict:
     return await service.get_profile_stage(profile_id=profile_id)
+
+
+@router.get("/{profile_id}", response_model=ProfileSchema)
+async def index(
+    profile_id: int,
+    token: str = Depends(oauth2_scheme),
+    service: ProfileService = Depends(get_profile_service)
+) -> ProfileSchema:
+    return await service.get_profile(profile_id=profile_id, token=token)

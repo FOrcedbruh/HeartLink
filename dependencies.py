@@ -11,6 +11,7 @@ db = DatabaseConnection(
     db_echo=settings.db.echo
 )
 
+
 def get_user_repository(session: AsyncSession = Depends(db.sesion_creation)) -> UserRepository:
     return UserRepository(session=session)
 
