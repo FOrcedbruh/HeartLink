@@ -38,7 +38,7 @@ def exc_index(req, exc: BaseException):
         detail=exc.detail
     )
     
-    
+
 if __name__ == "__main__":
     uvicorn.run("main:app", port=int(settings.run.port), reload=True)
 

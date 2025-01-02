@@ -22,6 +22,7 @@ class ProfileUpdateSchema(BaseModel):
     age: int | None = None
     surname: str | None = None
     firstname: str | None = None
+    gender: str | None = None
 
 class ProfileCreateSchema(BaseModel):
     user_id: int
