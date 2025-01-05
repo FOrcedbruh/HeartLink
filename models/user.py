@@ -6,7 +6,7 @@ from datetime import datetime
 
 if TYPE_CHECKING:
     from .profile import Profile
-
+    from .settings_model import SettingsModel
 
 class User(Base):
     __tablename__ = "users"
@@ -16,4 +16,6 @@ class User(Base):
     password: Mapped[bytes] = mapped_column(nullable=False)
     
     profile: Mapped["Profile"] = relationship(back_populates="user", cascade="all, delete-orphan", uselist=False)
+    settings: Mapped["SettingsModel"] = relationship(back_populates="user", cascade="all, delete-orphan", uselist=False)
+
     registered_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now())

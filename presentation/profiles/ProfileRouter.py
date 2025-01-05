@@ -24,12 +24,12 @@ async def index(
     return await service.get_profile_for_auth(token=token)
 
 
-@router.patch("/update")
+@router.patch("/update", response_model=ProfileSchema)
 async def index(
     token: str = Depends(oauth2_scheme),
     profile_in: ProfileUpdateSchema = Depends(utils.update_profileForm),
     service: ProfileService = Depends(get_profile_service)
-):
+) -> ProfileSchema:
     return await service.update_profile(profile_in=profile_in, token=token)
 
 @router.patch("/add_images/{profile_id}", response_model=dict)

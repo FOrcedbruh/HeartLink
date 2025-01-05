@@ -1,6 +1,6 @@
 from fastapi import Depends
-from repositories import UserRepository, ProfileRepository, LikeRepository, HobbyRepository
-from services import UserService, ProfileService, HobbyService, LikeService
+from repositories import UserRepository, ProfileRepository, LikeRepository, HobbyRepository, SettingsModelRepository
+from services import UserService, ProfileService, HobbyService, LikeService, SettingsModelService
 from config import DatabaseConnection, settings
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -24,6 +24,9 @@ def get_like_repository(session: AsyncSession = Depends(db.sesion_creation)) -> 
 def get_hobby_repository(session: AsyncSession = Depends(db.sesion_creation)) -> HobbyRepository:
     return HobbyRepository(session=session)
 
+def get_settings_repository(session: AsyncSession = Depends(db.sesion_creation)) -> SettingsModelRepository:
+    return SettingsModelRepository(session=session)
+
 #==================================================================
 
 def get_user_service(repository: UserRepository = Depends(get_user_repository)) -> UserService:
@@ -37,3 +40,6 @@ def get_like_service(repository: LikeService = Depends(get_like_repository)) -> 
 
 def get_hobby_service(repository: HobbyService = Depends(get_hobby_repository)) -> HobbyService:
     return HobbyService(repository=repository)
+
+def get_settings_service(repository: SettingsModelService = Depends(get_settings_repository)) -> SettingsModelService:
+    return SettingsModelService(repository=repository)
