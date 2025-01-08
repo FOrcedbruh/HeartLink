@@ -4,27 +4,29 @@ from services import UserService, ProfileService, HobbyService, LikeService, Set
 from config import DatabaseConnection, settings
 from sqlalchemy.ext.asyncio import AsyncSession
 
-db = DatabaseConnection(
-    db_url=settings.db.url,
-    echo_pool=settings.db.echo_pool,
-    pool_size=settings.db.pool_size,
-    db_echo=settings.db.echo
-)
+def get_db() -> DatabaseConnection:
+    return DatabaseConnection(
+        db_url=settings.db.test_url,
+        echo_pool=settings.db.echo_pool,
+        pool_size=settings.db.pool_size,
+        db_echo=settings.db.echo
+    )
+    
 
 
-def get_user_repository(session: AsyncSession = Depends(db.sesion_creation)) -> UserRepository:
+def get_user_repository(session: AsyncSession = Depends(get_db().sesion_creation)) -> UserRepository:
     return UserRepository(session=session)
 
-def get_profile_repository(session: AsyncSession = Depends(db.sesion_creation)) -> ProfileRepository:
+def get_profile_repository(session: AsyncSession = Depends(get_db().sesion_creation)) -> ProfileRepository:
     return ProfileRepository(session=session)
 
-def get_like_repository(session: AsyncSession = Depends(db.sesion_creation)) -> LikeRepository:
+def get_like_repository(session: AsyncSession = Depends(get_db().sesion_creation)) -> LikeRepository:
     return LikeRepository(session=session)
 
-def get_hobby_repository(session: AsyncSession = Depends(db.sesion_creation)) -> HobbyRepository:
+def get_hobby_repository(session: AsyncSession = Depends(get_db().sesion_creation)) -> HobbyRepository:
     return HobbyRepository(session=session)
 
-def get_settings_repository(session: AsyncSession = Depends(db.sesion_creation)) -> SettingsModelRepository:
+def get_settings_repository(session: AsyncSession = Depends(get_db().sesion_creation)) -> SettingsModelRepository:
     return SettingsModelRepository(session=session)
 
 #==================================================================

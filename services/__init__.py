@@ -2,7 +2,8 @@ __all__ = (
     "HobbyService",
     "LikeService",
     "ProfileService",
-    "UserService"
+    "UserService",
+    "SettingsModelService"
 )
 
 from .hobbies.HobbyService import HobbyService

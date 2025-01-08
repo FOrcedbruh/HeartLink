@@ -5,9 +5,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from repositories.base.exceptions.exceptions import BaseException
 from config import settings
 
+
 origins = [f"{str(settings.cors.origin)}"]
-
-
 
 app = FastAPI(
     title="HeartLink API",
